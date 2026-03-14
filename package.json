@@ -1,8 +1,8 @@
 {
-  "name": "middleware-nest",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "name": "middleware-guards-interceptors-study",
+  "version": "1.0.0",
+  "description": "Educational project for learning NestJS Middleware, Guards and Interceptors",
+  "author": "Study",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

@@ -1,98 +1,291 @@
+# Middleware, Guards & Interceptors Study
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Um projeto educacional para estudar e praticar os conceitos de **Middleware**, **Guards** e **Interceptors** no NestJS.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📋 Objetivo do Projeto
 
-## Description
+Este projeto é um estudo prático sobre os componentes essenciais de uma aplicação NestJS:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Middleware**: Processamento de requisições antes de chegarem ao controller
+- **Guards**: Controle de acesso e autenticação
+- **Interceptors**: Transformação e logging de requisições e respostas
 
-## Project setup
+É uma aplicação de aprendizado que demonstra como esses três componentes trabalham juntos no ciclo de vida de uma requisição HTTP.
 
-```bash
-$ yarn install
+---
+
+## 🏗️ Arquitetura
+
+### Fluxo de uma Requisição
+
+```
+Cliente (HTTP Request)
+    ↓
+Middleware (LoggerMiddleware) → Registra entrada
+    ↓
+Guard (AuthGuard) → Valida autorização
+    ↓
+Interceptor (LogInterceptor) → Inicia logging
+    ↓
+Controller (AppController)
+    ↓
+Service (AppService)
+    ↓
+Interceptor (LogInterceptor) → Finaliza logging e calcula tempo
+    ↓
+Cliente (HTTP Response)
 ```
 
-## Compile and run the project
+### Estrutura de Diretórios
 
-```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+```
+src/
+├── main.ts                          # Entrada da aplicação
+├── app.module.ts                    # Módulo raiz
+├── app.controller.ts                # Controller principal
+├── app.service.ts                   # Service com lógica de negócio
+├── middlewares/
+│   └── logger.middleware.ts         # Middleware de logging
+├── guards/
+│   └── auth.guard.ts               # Guard de autenticação
+└── interceptor/
+    └── log.interceptor.ts           # Interceptor de logging
 ```
 
-## Run tests
+### Componentes Principais
 
+#### 1. **Middleware** (`src/middlewares/logger.middleware.ts`)
+- Executa antes do Guard
+- Tem acesso à requisição original do Express
+- Usado para logging, parsing de dados, etc.
+- Neste projeto: Registra "Passou no middle"
+
+#### 2. **Guard** (`src/guards/auth.guard.ts`)
+- Determina se a requisição deve ser processada
+- Implementa `CanActivate`
+- Pode fazer validações, autenticação, autorização
+- Neste projeto: Sempre retorna `true` (permitindo acesso)
+
+#### 3. **Interceptor** (`src/interceptor/log.interceptor.ts`)
+- Wrappa o handler da rota
+- Tem acesso à requisição e resposta
+- Implementa `NestInterceptor`
+- Neste projeto: Calcula tempo de execução do request
+
+---
+
+## 🚀 Instalação
+
+### Pré-requisitos
+
+- **Node.js** >= 16
+- **Yarn** (ou npm)
+
+### Passos
+
+1. **Clone o repositório**
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+git clone <seu-repositorio>
+cd study-notion-schedule
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+2. **Instale as dependências**
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+yarn install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+3. **Inicie a aplicação**
+```bash
+yarn start:dev
+```
 
-## Resources
+A aplicação estará disponível em `http://localhost:3000`
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 📝 Como Usar
 
-## Support
+### Fazer uma Requisição
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+curl http://localhost:3000/hello
+```
 
-## Stay in touch
+**Resposta esperada:**
+```
+Hello World!
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Observar o Fluxo nos Logs
 
-## License
+Ao fazer a requisição, você verá no console:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```
+passou no middle
+passou no guard
+date now 0 ms
+entrou no service
+date now 1 ms
+```
+
+Isso demonstra a ordem de execução:
+1. Middleware executa primeiro
+2. Depois o Guard
+3. Depois o Interceptor (antes do handler)
+4. Service executa
+5. Interceptor finaliza (depois do handler)
+
+---
+
+## 🛠️ Scripts Disponíveis
+
+| Comando | Descrição |
+|---------|-----------|
+| `yarn start` | Inicia em modo produção |
+| `yarn start:dev` | Inicia em modo desenvolvimento (com watch) |
+| `yarn start:debug` | Inicia com debug (port 9229) |
+| `yarn build` | Compila o projeto TypeScript |
+| `yarn test` | Executa testes unitários |
+| `yarn test:watch` | Executa testes em modo watch |
+| `yarn test:cov` | Executa testes com cobertura |
+| `yarn test:e2e` | Executa testes e2e |
+| `yarn lint` | Executa ESLint com fix automático |
+| `yarn format` | Formata código com Prettier |
+
+---
+
+## 📚 Entendendo os Componentes
+
+### Middleware
+```typescript
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    console.log('Passou no middle');
+    next(); // Continua para o próximo middleware/guard
+  }
+}
+```
+
+**Quando usar:**
+- Logging de requisições
+- Parsing de corpos de requisição
+- Manipulação de headers
+
+### Guard
+```typescript
+@Injectable()
+export class AuthGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    console.log('passou no guard');
+    return true; // true = permitir, false = bloquear
+  }
+}
+```
+
+**Quando usar:**
+- Autenticação
+- Autorização baseada em roles
+- Validação de permissões
+
+### Interceptor
+```typescript
+@Injectable()
+export class LogInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler) {
+    const now = Date.now();
+    console.log(`date now ${Date.now() - now} ms`);
+
+    return next.handle().pipe(
+      tap(() => console.log(`date now ${Date.now() - now} ms`))
+    );
+  }
+}
+```
+
+**Quando usar:**
+- Logging de requisições/respostas
+- Transformação de dados
+- Tratamento de erros
+- Cálculo de performance
+
+---
+
+## 🔍 Aplicação na Rota
+
+A rota `/hello` está configurada para usar todos os componentes:
+
+```typescript
+@Controller()
+@UseGuards(AuthGuard)              // Guard aplicado
+@UseInterceptors(LogInterceptor)   // Interceptor aplicado
+export class AppController {
+  @Get('/hello')
+  getHello(): string {
+    return this.appService.getHello();
+  }
+}
+```
+
+E o middleware está configurado no módulo:
+
+```typescript
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: 'hello', method: RequestMethod.GET });
+  }
+}
+```
+
+---
+
+## 🧪 Testando
+
+### Executar testes unitários
+```bash
+yarn test
+```
+
+### Executar testes com cobertura
+```bash
+yarn test:cov
+```
+
+### Executar testes e2e
+```bash
+yarn test:e2e
+```
+
+---
+
+## 📖 Recursos Úteis
+
+- [NestJS Documentation - Middleware](https://docs.nestjs.com/middleware)
+- [NestJS Documentation - Guards](https://docs.nestjs.com/guards)
+- [NestJS Documentation - Interceptors](https://docs.nestjs.com/interceptors)
+- [Express Middleware Documentation](https://expressjs.com/en/guide/using-middleware.html)
+
+---
+
+## 📄 Licença
+
+MIT
+
+---
+
+## 💡 Próximos Passos
+
+Para aprofundar seu aprendizado, você pode:
+
+1. Implementar autenticação real no `AuthGuard`
+2. Adicionar tratamento de erros no `LogInterceptor`
+3. Criar um middleware de validação de CORS
+4. Implementar rate limiting com Guards
+5. Adicionar mais rotas para testar diferentes cenários
